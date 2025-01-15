@@ -5,8 +5,7 @@ import bodyParser from 'body-parser';
 const app=express()
 
 app.use(cors({ 
-    origin:'http://localhost:5178',
-           
+    origin:'http://localhost:5179',        
     credentials:true  
 }))
 
