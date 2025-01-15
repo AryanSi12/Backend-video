@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 const app=express()
 
 app.use(cors({ 
-    origin:'http://localhost:5179',        
+    origin:'https://front-end-video-51k0hu4l4-aryans-projects-bbec6789.vercel.app',        
     credentials:true  
 }))
 
