@@ -7,6 +7,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import { Video } from "../models/Video.model.js"
 
 const createPlaylist = asyncHandler(async (req, res) => {
+    
     const {name, description} = req.body
     console.log("Hello   ");
     
@@ -24,8 +25,48 @@ const createPlaylist = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200,playlist,"Playlist created sucessfully"))
 })
 
+const getPlaylistVideos = asyncHandler(async(req,res) => {
+    const {playlistId} = req.params
+    console.log(playlistId);
+    
+    const playlistVideos = await Playlist.aggregate([
+        {
+            $match : {  
+                _id : new  mongoose.Types.ObjectId(playlistId)
+            }
+        },
+        {
+            $lookup : {
+                from : "videos",
+                localField : "videos",
+                foreignField : "_id",
+                as : "videoDetails"
+            }
+        },
+        {
+            $lookup : {
+                from : "users",
+                localField : "owner",
+                foreignField : "_id",
+                as : "ownerDetails"
+            }
+        },
+        {
+            $project : {
+                videoDetails : 1,
+                ownerDetails : 1,
+            }
+        },
+    ])
+    return res
+    .status(200)
+    .json(new ApiResponse(200,playlistVideos,"playlist's videos fetched sucessfully"))
+})
+
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const {userId} = req.params
+
+    
     const userPlaylists = await Playlist.aggregate([
         {
             $match : {
@@ -33,10 +74,18 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
             }
         },
         {
-            $project : {
-                name : 1,
-                description : 1,
-                
+            $lookup : {
+                from : "videos",
+                localField : "videos",
+                foreignField : "_id",
+                as : "videoDetails"
+            }
+        }, 
+        {
+            $project: {
+              name: 1,
+              description: 1,
+              videoDetails: 1
             }
         }
     ])
@@ -48,6 +97,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
     //TODO: get playlist by id
+    console.log("getting playlist");
+    
+    
     const playlist = await Playlist.aggregate([
         {
             $match : {
@@ -78,7 +130,8 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const {playlistId, videoId} = req.params
-
+    console.log("HEloo");
+    
     if(!playlistId)throw new ApiError(400,"Invalid playlist id")
     if(!videoId)throw new ApiError(400,"Invalid video id")
 
@@ -115,6 +168,8 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     const {playlistId, videoId} = req.params
+    console.log(videoId);
+    
     // TODO: remove video from playlist
     if(!playlistId)throw new ApiError(400,"Playlist id is invalid")
     
@@ -210,5 +265,6 @@ export {
     addVideoToPlaylist,
     removeVideoFromPlaylist,
     deletePlaylist,
-    updatePlaylist
+    updatePlaylist,
+    getPlaylistVideos
 }

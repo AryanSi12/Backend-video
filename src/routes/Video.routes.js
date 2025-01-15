@@ -7,7 +7,8 @@ import {
     publishAVideo,
     togglePublishStatus,
     updateVideo,
-    getUserVideos
+    getUserVideos,
+    getSearchSuggestions
 } from "../controllers/Video.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import {upload} from "../middlewares/multer.middleware.js"
@@ -42,5 +43,5 @@ router
 router.route("/video/random-videos").get(getRandomVideos)
 router.route("/video/user-videos").get(getUserVideos)
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
-
+router.route('/search-suggestions').get(getSearchSuggestions);
 export default router         

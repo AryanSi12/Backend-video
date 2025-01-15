@@ -85,6 +85,27 @@ const getAllVideos = asyncHandler(async (req, res) => {
     
 }) 
 
+const getSearchSuggestions = asyncHandler(async (req, res) => {
+    const { query } = req.query;
+
+    if (!query) {
+        return res.status(400).json({ message: "Query is required" });
+    }
+
+    try {
+        const suggestions = await Video.find(
+            {
+                title: { $regex: query, $options: "i" },
+            },
+            { title: 1, _id: 1 }
+        ).limit(10);
+
+        res.status(200).json({ suggestions });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching suggestions", error });
+    }
+});
+
 const getRandomVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 15, sortBy="createdAt", sortType=1 } = req.query
     //TODO: get all videos based on query, sort, pagination
@@ -418,5 +439,6 @@ export {
     deleteVideo,
     togglePublishStatus,
     getRandomVideos,
-    getUserVideos
+    getUserVideos,
+    getSearchSuggestions
 }
