@@ -4,10 +4,24 @@ import cors from "cors"
 import bodyParser from 'body-parser';
 const app=express()
 
-app.use(cors({ 
-    origin:'https://front-end-video-51k0hu4l4-aryans-projects-bbec6789.vercel.app',        
-    credentials:true  
-}))
+const allowedOrigins = [
+    'https://front-end-video-51k0hu4l4-aryans-projects-bbec6789.vercel.app',
+    'http://localhost:5179/',
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+}));
+
 
 app.use(express.json({limit:"16kb"}))
 app.use(express.urlencoded({limit:"32kb"}))
