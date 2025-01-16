@@ -6,7 +6,7 @@ const app=express()
 
 const allowedOrigins = [
     'https://front-end-video-hkmibtyso-aryans-projects-bbec6789.vercel.app',
-    'https://front-end-video-aryans-projects-bbec6789.vercel.app/',
+    'https://front-end-video.vercel.app',
     'http://localhost:5179', // Example for local development
   ];
   
