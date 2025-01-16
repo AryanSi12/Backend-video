@@ -6,7 +6,7 @@ const app=express()
 
 const allowedOrigins = [
     'https://front-end-video-51k0hu4l4-aryans-projects-bbec6789.vercel.app',
-    'http://localhost:5179/',
+    'http://localhost:5179',
 ];
 
 app.use(cors({
